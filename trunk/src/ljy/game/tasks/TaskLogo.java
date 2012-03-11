@@ -3,7 +3,10 @@
  */
 package ljy.game.tasks;
 
+import haframework.draw.Sprite;
+import haframework.draw.SpriteFactory;
 import haframework.task.Task;
+import ljy.game.TaskSet;
 
 /**
  * @author hejiabin
@@ -11,6 +14,8 @@ import haframework.task.Task;
  */
 public class TaskLogo extends Task 
 {
+	protected Sprite m_bg = null;
+	protected float m_time = 0.0f;
 
 	/**
 	 * @desc	constructor
@@ -23,19 +28,28 @@ public class TaskLogo extends Task
 	@Override
 	public void vBegin()
 	{
-		//TODO
+		m_bg = SpriteFactory.Singleton().CreateSprite( ljy.game.R.drawable.logo );
+		m_bg.SetUV( 0, 0, 1.0f, 1.0f );
+		
+		m_time = 0.0f;
 	}
 	
 	@Override
 	public void vMain( float elapsed )
 	{
-		//TODO
+		m_time += 0.1f;
+		
+		if( m_time > 20.0f )
+		{
+			this.Stop();
+			TaskSet._mainMenuTask.Start( 0 );
+		}
 	}
 	
 	@Override
 	public void vDraw( float elapsed )
 	{
-		//TODO
+		m_bg.Draw( 0, 0, 320, 480 );
 	}
 
 }
