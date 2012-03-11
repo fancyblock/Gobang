@@ -35,7 +35,7 @@ public class HAApp implements IHAApp, Renderer
 	static public float SCREEN_RATIO_HEI = 1.0f;
 	
 	static final public float SCREEN_LOGIC_WID = 320;
-	static final public float SCREEN_LOGIC_HEI = 560;
+	static final public float SCREEN_LOGIC_HEI = 480;
 	
 	static protected Activity m_activity = null;
 	
