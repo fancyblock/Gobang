@@ -3,6 +3,7 @@
  */
 package ljy.game.tasks;
 
+import ljy.game.TaskSet;
 import haframework.draw.Sprite;
 import haframework.draw.SpriteFactory;
 import haframework.gui.UIButton;
@@ -108,7 +109,8 @@ public class TaskMainMenu extends Task implements IButtonCallback
 		
 		if( btn == m_btnPCMode )
 		{
-			//TODO
+			this.Stop();
+			TaskSet._pcGameTask.Start( 0 );
 		}
 		else if( btn == m_btnVSMode )
 		{
@@ -116,15 +118,18 @@ public class TaskMainMenu extends Task implements IButtonCallback
 		}
 		else if( btn == m_btnAbout )
 		{
-			//TODO
+			this.Stop();
+			TaskSet._aboutTask.Start( 0 );
 		}
 		else if( btn == m_btnSetting )
 		{
-			//TODO
+			this.Stop();
+			TaskSet._settingTask.Start( 0 );
 		}
 		else if( btn == m_btnHelp )
 		{
-			//TODO
+			this.Stop();
+			TaskSet._helpTask.Start( 0 );
 		}
 	}
 }

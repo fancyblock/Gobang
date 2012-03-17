@@ -9,12 +9,14 @@ import haframework.task.Task;
  * @author hejiabin
  *
  */
-public class TaskGameOver extends Task {
+public class TaskGameOver extends Task 
+{
 
 	/**
 	 * 
 	 */
-	public TaskGameOver() {
+	public TaskGameOver() 
+	{
 		// TODO Auto-generated constructor stub
 	}
 
