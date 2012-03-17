@@ -5,6 +5,7 @@ package ljy.game.tasks;
 
 import haframework.draw.Sprite;
 import haframework.draw.SpriteFactory;
+import haframework.sound.SoundManager;
 import haframework.task.Task;
 import ljy.game.TaskSet;
 
@@ -32,6 +33,9 @@ public class TaskLogo extends Task
 		m_bg.SetUV( 0, 0, 1.0f, 1.0f );
 		
 		m_time = 0.0f;
+		
+		SoundManager.Singleton().LoadSound( ljy.game.R.raw.btnover, "btnOver" );
+		SoundManager.Singleton().LoadSoundBGM( ljy.game.R.raw.menubgm, "menuBgm" );
 	}
 	
 	@Override
