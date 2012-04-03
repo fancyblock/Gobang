@@ -22,6 +22,7 @@ public class Task
 	protected int m_status = 0;
 	
 	private ArrayList<DelayCallData> m_delayCallList = null;
+	private ArrayList<ActionData> m_actionList = null;
 	
 	//-------------------------------------------- public function ---------------------------------------------------
 	
@@ -55,6 +56,40 @@ public class Task
 	public boolean Stop()
 	{
 		return TaskManager.Singleton().Remove( this );
+	}
+	
+	/**
+	 * @desc	start a action
+	 * @param	act
+	 * @param	func
+	 */
+	public boolean StartAction( Action act, String func )
+	{
+		Method callbackCall = null;
+		
+		if( func != null )
+		{
+			try
+			{
+				callbackCall = this.getClass().getMethod( func );
+			}
+			catch( Exception e )
+			{
+				System.out.println( "[Error] the method is not exist" );
+				return false;
+			}
+		}
+		
+		ActionData action = new ActionData();
+		action._action = act;
+		action._actionCallback = callbackCall;
+		
+		// invoke action func
+		action._action.vEnter();
+		
+		m_actionList.add( action );
+		
+		return true;
 	}
 	
 	/**
@@ -130,6 +165,15 @@ public class Task
 		return m_delayCallList;
 	}
 	
+	/**
+	 * @desc	return the action list
+	 * @return
+	 */
+	public ArrayList<ActionData> GetActions()
+	{
+		return m_actionList;
+	}
+	
 	public void vBegin(){}
 	public void vEnd(){}
 	public void vDestroy(){}
@@ -148,4 +192,14 @@ class DelayCallData
 {
 	public Method	_delayCall;
 	public float	_delayTime;
+}
+
+/**
+ * @desc 	struct of action
+ * @author	hejiabin
+ */
+class ActionData
+{
+	public Action _action;
+	public Method _actionCallback;
 }

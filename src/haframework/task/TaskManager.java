@@ -147,10 +147,12 @@ public class TaskManager
 	 * @param	elepsed
 	 */
 	private ArrayList<DelayCallData> eraseList = new ArrayList<DelayCallData>();
+	private ArrayList<ActionData> actEraseList = new ArrayList<ActionData>();
 	public void Main( float elepsed )
 	{
 		Task task;
 		DelayCallData delayData;
+		ActionData actData;
 		
 		int len = m_runningTasks.size();
 		for( int i = 0; i < len; i++ )
@@ -158,12 +160,45 @@ public class TaskManager
 			task = m_runningTasks.get(i);
 			task.vMain( elepsed );
 			
+			int j;
+			
+			// process action
+			actEraseList.clear();
+			ArrayList<ActionData> actionList = task.GetActions();
+			int actionLen = actionList.size();
+			for( j = 0; j < actionLen; j++ )
+			{
+				actData = actionList.get(j);
+				if( actData._action.vUpdate( elepsed ) == false )
+				{
+					actEraseList.add( actData );
+				}
+			}
+			
+			// erase delay call
+			actionLen = actEraseList.size();
+			for( j = 0; j < actionLen; j++ )
+			{
+				actData = actEraseList.get(j);
+				// invoke the callback
+				if( actData._actionCallback != null )
+				{
+					try
+					{
+						actData._actionCallback.invoke( task );
+					}
+					catch( Exception e )
+					{
+					}
+				}
+				actionList.remove( actData );
+			}
+			
 			// process delay call
 			eraseList.clear();
 			
 			ArrayList<DelayCallData> delayCallList = task.GetDelayCall();
 			int delayCallLen = delayCallList.size();
-			int j;
 			for( j = 0; j < delayCallLen; j++ )
 			{
 				delayData = delayCallList.get(j);
@@ -206,6 +241,15 @@ public class TaskManager
 		{
 			task = m_runningTasks.get(i);
 			task.vDraw( elepsed );
+			
+			// render action
+			ArrayList<ActionData> actionList = task.GetActions();
+			int actionLen = actionList.size();
+			for( int j = 0; j < actionLen; j++ )
+			{
+				ActionData actData = actionList.get(j);
+				actData._action.vDraw( elepsed );
+			}
 		}
 	}
 	
