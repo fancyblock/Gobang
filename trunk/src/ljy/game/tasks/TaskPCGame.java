@@ -32,10 +32,9 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	static private final float BOARD_X = 20;
 	static private final float BOARD_Y = 120;
 	static private final float BOARD_SIZE = 280;
-	static private final float BOARD_X2 = 37;
-	static private final float BOARD_Y2 = 137;
-	static private final float BOARD_SIZE2 = 264;
-	static private final int MAX_LINE = 15;
+	static private final float BOARD_X2 = 38;
+	static private final float BOARD_Y2 = 138;
+	static private final float BOARD_SIZE2 = 262;
 	
 	//-------------------------------------- private member --------------------------------------
 	
@@ -157,8 +156,8 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 		{
 			Point pt = boardToScreen( m_pendingChess.x, m_pendingChess.y );
 			
-			m_imgLine.Draw( BOARD_X2 - 3, pt.y - 3, BOARD_SIZE2, 6 );
-			m_imgLine.Draw( pt.x - 3, BOARD_Y2 - 3, 6, BOARD_SIZE2 );
+			m_imgLine.Draw( BOARD_X2 - 3, pt.y - 3, BOARD_SIZE2 - 12, 6 );
+			m_imgLine.Draw( pt.x - 3, BOARD_Y2 - 3, 6, BOARD_SIZE2 - 12 );
 			
 			if( m_curTurnChess == Chess.CHESS_BLACK )
 			{
@@ -281,11 +280,11 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 		}
 		else if( x > ( BOARD_X2 + BOARD_SIZE2 ) )
 		{
-			pt.x = MAX_LINE - 1;
+			pt.x = ChessBoard.MAX_LINE - 1;
 		}
 		else
 		{
-			pt.x = (int)( ( (float)x - BOARD_X2 ) / ( BOARD_SIZE2 / (float)MAX_LINE ) );
+			pt.x = (int)( ( (float)x - BOARD_X2 ) / ( BOARD_SIZE2 / (float)ChessBoard.MAX_LINE ) );
 		}
 		
 		if( y < BOARD_Y2 )
@@ -294,11 +293,11 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 		}
 		else if( y > ( BOARD_Y2 + BOARD_SIZE2 ) )
 		{
-			pt.y = MAX_LINE - 1;
+			pt.y = ChessBoard.MAX_LINE - 1;
 		}
 		else
 		{
-			pt.y = (int)( ( (float)y - BOARD_Y2 ) / ( BOARD_SIZE2 / (float)MAX_LINE ) );
+			pt.y = (int)( ( (float)y - BOARD_Y2 ) / ( BOARD_SIZE2 / (float)ChessBoard.MAX_LINE ) );
 		}
 		
 		return pt;
@@ -308,7 +307,7 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	{
 		Point pt = new Point();
 		
-		float cellSize = BOARD_SIZE2 / (float)MAX_LINE;
+		float cellSize = BOARD_SIZE2 / (float)ChessBoard.MAX_LINE;
 		
 		pt.x = (int)( BOARD_X2 + (float)x * cellSize );
 		pt.y = (int)( BOARD_Y2 + (float)y * cellSize );
