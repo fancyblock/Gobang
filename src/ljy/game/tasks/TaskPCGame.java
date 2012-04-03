@@ -92,10 +92,11 @@ public class TaskPCGame extends Task implements IButtonCallback
 		// init the game logic 
 		m_chessboard = new ChessBoard();
 		m_pendingChess = null;
-		m_curTurnChess = Chess.CHESS_BLACK;
+		m_curTurnChess = Chess.CHESS_BLACK;		// black first
 		
+		gameStart();
 	}
-	
+
 	@Override
 	public void vEnd()
 	{
@@ -192,6 +193,14 @@ public class TaskPCGame extends Task implements IButtonCallback
 		}
 		
 		//TODO
+	}
+	
+	//------------------------------------------- private function --------------------------------------------------
+	
+	private void gameStart()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 	
 	// put the chess to the board
