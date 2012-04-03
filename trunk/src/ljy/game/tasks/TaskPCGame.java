@@ -7,9 +7,11 @@ import haframework.draw.Sprite;
 import haframework.draw.SpriteFactory;
 import haframework.events.TouchEvent;
 import haframework.gui.UIButton;
+import haframework.gui.UICheckBox;
 import haframework.gui.UIManager;
 import haframework.gui.UIWidget;
 import haframework.gui.uievent.IButtonCallback;
+import haframework.gui.uievent.ICheckBoxCallback;
 import haframework.task.Task;
 
 import java.util.Vector;
@@ -23,7 +25,7 @@ import android.graphics.Point;
  * @author hjb
  *
  */
-public class TaskPCGame extends Task implements IButtonCallback
+public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallback
 {
 	//-------------------------------------- static member --------------------------------------
 	
@@ -39,6 +41,8 @@ public class TaskPCGame extends Task implements IButtonCallback
 	
 	private UIWidget m_uiRoot = null;
 	private UIButton m_btnBack = null;
+	private UICheckBox m_cbBlack = null;
+	private UICheckBox m_cbWhite = null;
 	
 	// graphic
 	private Sprite m_bg = null;
@@ -75,6 +79,18 @@ public class TaskPCGame extends Task implements IButtonCallback
 		m_btnBack.SetCallback( this );
 		m_btnBack.SetParent( m_uiRoot );
 		
+		m_cbBlack = new UICheckBox( ljy.game.R.drawable.menus, 180, 80, 180, 60, 39, 19 );
+		m_cbBlack.SetPos( 30, 50 );
+		m_cbBlack.SetCallback( this );
+		m_cbBlack.SetParent( m_uiRoot );
+		m_cbBlack.Enable( false );
+		
+		m_cbWhite = new UICheckBox( ljy.game.R.drawable.menus, 230, 80, 230, 60, 39, 19 );
+		m_cbWhite.SetPos( 30, 80 );
+		m_cbWhite.SetCallback( this );
+		m_cbWhite.SetParent( m_uiRoot );
+		m_cbWhite.Enable( false );
+		
 		UIManager.Singleton().AddToRoot( m_uiRoot );
 		
 		// init game graphic
@@ -91,8 +107,6 @@ public class TaskPCGame extends Task implements IButtonCallback
 		
 		// init the game logic 
 		m_chessboard = new ChessBoard();
-		m_pendingChess = null;
-		m_curTurnChess = Chess.CHESS_BLACK;		// black first
 		
 		gameStart();
 	}
@@ -195,11 +209,17 @@ public class TaskPCGame extends Task implements IButtonCallback
 		//TODO
 	}
 	
+	public void onCheckBoxCheck( UICheckBox checkbox ){}
+	
 	//------------------------------------------- private function --------------------------------------------------
 	
 	private void gameStart()
 	{
-		// TODO Auto-generated method stub
+		m_pendingChess = null;
+		m_curTurnChess = Chess.CHESS_BLACK;		// black first
+		
+		m_cbBlack.Check( true );
+		m_cbWhite.Check( false );
 		
 	}
 	
@@ -235,12 +255,18 @@ public class TaskPCGame extends Task implements IButtonCallback
 		
 		Point pt = screenToBoard( x, y );
 		
-		m_chessboard.PutChess( m_curTurnChess, pt.x, pt.y );
+		if( m_chessboard.PutChess( m_curTurnChess, pt.x, pt.y ) == true )
+		{
+			// TODO Auto-generated method stub
+			
+			m_curTurnChess = 3 - m_curTurnChess;	//[HACK]
 		
-		// TODO Auto-generated method stub
-		m_curTurnChess = 3 - m_curTurnChess;
-	
+			m_cbBlack.Check( !m_cbBlack.IsChecked() );
+			m_cbWhite.Check( !m_cbWhite.IsChecked() );
+		}
+		
 		m_pendingChess = null;
+		
 	}
 	
 	//--------------------------------------------------- private function -----------------------------------------------------
