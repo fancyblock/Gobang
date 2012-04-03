@@ -20,6 +20,7 @@ public class TaskHelp extends Task implements IButtonCallback
 {
 
 	protected Sprite m_bg = null;
+	protected Sprite m_imgHelpInfo = null;
 	protected UIWidget m_uiRoot = null;
 	protected UIButton m_btnBack = null;
 	
@@ -35,6 +36,9 @@ public class TaskHelp extends Task implements IButtonCallback
 	{
 		m_bg = SpriteFactory.Singleton().CreateSprite( ljy.game.R.drawable.menus );
 		m_bg.SetUV( 160, 5, 20, 20 );
+		
+		m_imgHelpInfo = SpriteFactory.Singleton().CreateSprite( ljy.game.R.drawable.menus );
+		m_imgHelpInfo.SetUV( 5, 340, 140, 160 );
 		
 		m_uiRoot = new UIWidget();
 		
@@ -59,6 +63,8 @@ public class TaskHelp extends Task implements IButtonCallback
 	public void vDraw( float elapsed )
 	{
 		m_bg.Draw( 0, 0, 320, 480 );
+		
+		m_imgHelpInfo.Draw( 90.65f, 120 );
 	}
 
 	public void onButtonDown( UIButton btn ){}
