@@ -318,9 +318,8 @@ public class UIWidget
 	
 	// test if the point is in this widget or not
 	protected boolean isInArea( int x, int y )
-	{		
-		if( x >= m_screenX * HAApp.SCREEN_RATIO_WID && x <= ( m_screenX + m_width ) * HAApp.SCREEN_RATIO_WID && 
-			y >= m_screenY * HAApp.SCREEN_RATIO_HEI && y <= ( m_screenY + m_height ) * HAApp.SCREEN_RATIO_HEI )
+	{
+		if( x >= m_screenX && x <= ( m_screenX + m_width ) && y >= m_screenY && y <= ( m_screenY + m_height ) )
 		{
 			return true;
 		}

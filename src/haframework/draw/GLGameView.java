@@ -3,6 +3,7 @@
  */
 package haframework.draw;
 
+import haframework.HAApp;
 import haframework.events.TouchEvent;
 import haframework.gui.UIManager;
 import haframework.task.TaskManager;
@@ -87,8 +88,8 @@ public class GLGameView extends GLSurfaceView
 				evt.Type = TouchEvent.MOVE;
 			}
 
-			evt.X = (int)event.getX(i);
-			evt.Y = (int)event.getY(i);
+			evt.X = (int)( event.getX(i) / HAApp.SCREEN_RATIO_WID );
+			evt.Y = (int)( event.getY(i) / HAApp.SCREEN_RATIO_HEI );
 			
 			events.add( evt );
 		}
