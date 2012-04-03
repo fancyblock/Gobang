@@ -15,6 +15,7 @@ import haframework.task.Task;
 import java.util.Vector;
 
 import ljy.game.TaskSet;
+import ljy.game.chess.Chess;
 import ljy.game.chess.ChessBoard;
 import android.graphics.Point;
 
@@ -48,6 +49,7 @@ public class TaskPCGame extends Task implements IButtonCallback
 	
 	private ChessBoard m_chessboard = null;
 	private Point m_pendingChess = null;
+	private int m_curTurnChess = Chess.CHESS_BLACK;
 	
 	//-------------------------------------- public function --------------------------------------
 
@@ -56,7 +58,6 @@ public class TaskPCGame extends Task implements IButtonCallback
 	 */
 	public TaskPCGame()
 	{
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -80,10 +81,10 @@ public class TaskPCGame extends Task implements IButtonCallback
 		m_imgChessboard = SpriteFactory.Singleton().CreateSprite( ljy.game.R.drawable.menus );
 		m_imgChessboard.SetUV( 10, 170, 161, 161 );
 		m_imgChessBlack = SpriteFactory.Singleton().CreateSprite( ljy.game.R.drawable.menus );
-		m_imgChessBlack.SetUV( 140, 90, 20, 20 );
+		m_imgChessBlack.SetUV( 140, 120, 20, 20 );
 		m_imgChessBlack.SetAnchor( 10, 10 );
 		m_imgChessWhite = SpriteFactory.Singleton().CreateSprite( ljy.game.R.drawable.menus );
-		m_imgChessWhite.SetUV( 140, 120, 20, 20 );
+		m_imgChessWhite.SetUV( 140, 90, 20, 20 );
 		m_imgChessWhite.SetAnchor( 10, 10 );
 		m_imgLine = SpriteFactory.Singleton().CreateSprite( ljy.game.R.drawable.menus );
 		m_imgLine.SetUV( 190, 5, 20, 20 );
@@ -91,6 +92,7 @@ public class TaskPCGame extends Task implements IButtonCallback
 		// init the game logic 
 		m_chessboard = new ChessBoard();
 		m_pendingChess = null;
+		m_curTurnChess = Chess.CHESS_BLACK;
 		
 	}
 	
@@ -106,10 +108,34 @@ public class TaskPCGame extends Task implements IButtonCallback
 	@Override
 	public void vDraw( float elapsed )
 	{
+		int i,j;
+		
 		m_bg.Draw( 0, 0, 320, 480 );
 		
 		// draw chessboard
 		m_imgChessboard.Draw( BOARD_X, BOARD_Y, BOARD_SIZE, BOARD_SIZE );
+		
+		// draw chesses
+		int chessData[][] = m_chessboard.GetChessData();
+		int chess;
+		for( i = 0; i < ChessBoard.MAX_LINE; i++ )
+		{
+			for( j = 0; j < ChessBoard.MAX_LINE; j++ )
+			{
+				chess = chessData[i][j];
+				Point pt = boardToScreen( i, j );
+				
+				if( chess == Chess.CHESS_BLACK )
+				{
+					m_imgChessBlack.Draw( pt.x, pt.y );
+				}
+				
+				if( chess == Chess.CHESS_WHITE )
+				{
+					m_imgChessWhite.Draw( pt.x, pt.y );
+				}
+			}
+		}
 		
 		// draw pending chess
 		if( m_pendingChess != null )
@@ -119,7 +145,14 @@ public class TaskPCGame extends Task implements IButtonCallback
 			m_imgLine.Draw( BOARD_X2 - 3, pt.y - 3, BOARD_SIZE2, 6 );
 			m_imgLine.Draw( pt.x - 3, BOARD_Y2 - 3, 6, BOARD_SIZE2 );
 			
-			//TODO 
+			if( m_curTurnChess == Chess.CHESS_BLACK )
+			{
+				m_imgChessBlack.Draw( pt.x, pt.y );
+			}
+			else if( m_curTurnChess == Chess.CHESS_WHITE )
+			{
+				m_imgChessWhite.Draw( pt.x, pt.y );
+			}
 		}
 	}
 
@@ -140,7 +173,6 @@ public class TaskPCGame extends Task implements IButtonCallback
 			putChess( evt.X, evt.Y );
 			break;
 		default:
-			//TODO 
 			break;
 		}
 		
@@ -187,7 +219,17 @@ public class TaskPCGame extends Task implements IButtonCallback
 	// final put chess
 	private void putChess(int x, int y)
 	{
+		if( m_pendingChess == null )
+		{
+			return;
+		}
+		
+		Point pt = screenToBoard( x, y );
+		
+		m_chessboard.PutChess( m_curTurnChess, pt.x, pt.y );
+		
 		// TODO Auto-generated method stub
+		m_curTurnChess = 3 - m_curTurnChess;
 	
 		m_pendingChess = null;
 	}
