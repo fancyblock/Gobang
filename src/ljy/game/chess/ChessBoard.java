@@ -24,7 +24,10 @@ public class ChessBoard
 	 */
 	public boolean PutChess( int type, int xPos, int yPos )
 	{
-		//TODO
+		if( m_chessData[xPos][yPos] != Chess.CHESS_BLANK )
+		{
+			return false;
+		}
 		
 		m_chessData[xPos][yPos] = type;
 		

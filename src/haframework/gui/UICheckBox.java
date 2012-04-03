@@ -92,7 +92,14 @@ public class UICheckBox extends UIWidget
 		}
 		else
 		{
-			m_up.Draw( m_screenX, m_screenY );
+			if( m_isChecked == true )
+			{
+				m_down.Draw( m_screenX, m_screenY );
+			}
+			else
+			{
+				m_up.Draw( m_screenX, m_screenY );
+			}
 		}
 	}
 	
