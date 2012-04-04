@@ -32,6 +32,7 @@ public class Task
 	public Task()
 	{
 		m_delayCallList = new ArrayList<DelayCallData>();
+		m_actionList = new ArrayList<ActionData>();
 		
 		m_status = eTaskState.STATUS_IDLE;
 		m_priority = 0;
