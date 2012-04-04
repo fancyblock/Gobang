@@ -19,6 +19,7 @@ import java.util.Vector;
 import ljy.game.TaskSet;
 import ljy.game.chess.Chess;
 import ljy.game.chess.ChessBoard;
+import ljy.game.ingame.AinBegin;
 import android.graphics.Point;
 
 /**
@@ -35,6 +36,9 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	static private final float BOARD_X2 = 38;
 	static private final float BOARD_Y2 = 138;
 	static private final float BOARD_SIZE2 = 262;
+	
+	static private final int STATE_ANIMATION = 1;
+	static private final int STATE_PUTCHESS = 2;
 	
 	//-------------------------------------- private member --------------------------------------
 	
@@ -53,6 +57,10 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	private ChessBoard m_chessboard = null;
 	private Point m_pendingChess = null;
 	private int m_curTurnChess = Chess.CHESS_BLACK;
+	private int m_state;
+	
+	// actions
+	private AinBegin m_aniBegin = null;
 	
 	//-------------------------------------- public function --------------------------------------
 
@@ -106,6 +114,9 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 		
 		// init the game logic 
 		m_chessboard = new ChessBoard();
+		
+		// init the action
+		m_aniBegin = new AinBegin();
 		
 		gameStart();
 	}
@@ -173,6 +184,11 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	@Override
 	public boolean vOnTouchEvent( Vector<TouchEvent> events )
 	{
+		if( m_state != STATE_PUTCHESS )
+		{
+			return false;
+		}
+		
 		TouchEvent evt = events.get( 0 );
 		
 		switch( evt.Type )
@@ -216,10 +232,17 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	{
 		m_pendingChess = null;
 		m_curTurnChess = Chess.CHESS_BLACK;		// black first
+		m_state = STATE_ANIMATION;
 		
 		m_cbBlack.Check( true );
 		m_cbWhite.Check( false );
 		
+		this.StartAction( m_aniBegin, "switchToPutChess" );
+	}
+	
+	public void switchToPutChess()
+	{
+		m_state = STATE_PUTCHESS;
 	}
 	
 	// put the chess to the board
