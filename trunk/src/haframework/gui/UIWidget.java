@@ -3,7 +3,6 @@
  */
 package haframework.gui;
 
-import haframework.HAApp;
 import haframework.events.TouchEvent;
 
 import java.util.ArrayList;

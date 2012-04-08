@@ -114,7 +114,8 @@ public class TaskMainMenu extends Task implements IButtonCallback
 		}
 		else if( btn == m_btnVSMode )
 		{
-			//TODO
+			this.Stop();
+			TaskSet._vsGameTask.Start( 0 );
 		}
 		else if( btn == m_btnAbout )
 		{

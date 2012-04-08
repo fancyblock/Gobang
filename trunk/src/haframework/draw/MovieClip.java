@@ -3,8 +3,6 @@
  */
 package haframework.draw;
 
-import haframework.util.UtilFunc;
-
 import java.util.ArrayList;
 
 /**
