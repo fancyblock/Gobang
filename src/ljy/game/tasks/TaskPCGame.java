@@ -20,6 +20,8 @@ import ljy.game.TaskSet;
 import ljy.game.chess.Chess;
 import ljy.game.chess.ChessBoard;
 import ljy.game.ingame.AinBegin;
+import ljy.game.ingame.AniBlackTurn;
+import ljy.game.ingame.AniWhiteTurn;
 import android.graphics.Point;
 
 /**
@@ -61,6 +63,8 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	
 	// actions
 	private AinBegin m_aniBegin = null;
+	private AniBlackTurn m_aniBlackTurn = null;
+	private AniWhiteTurn m_aniWhiteTurn = null;
 	
 	//-------------------------------------- public function --------------------------------------
 
@@ -117,6 +121,8 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 		
 		// init the action
 		m_aniBegin = new AinBegin();
+		m_aniBlackTurn = new AniBlackTurn();
+		m_aniWhiteTurn = new AniWhiteTurn();
 		
 		gameStart();
 	}
@@ -237,7 +243,19 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 		m_cbBlack.Check( true );
 		m_cbWhite.Check( false );
 		
-		this.StartAction( m_aniBegin, "switchToPutChess" );
+		this.StartAction( m_aniBegin, "aniBlackTurn" );
+	}
+	
+	public void aniBlackTurn()
+	{
+		m_state = STATE_ANIMATION;
+		this.StartAction( m_aniBlackTurn, "switchToPutChess" );
+	}
+	
+	public void aniWhiteTurn()
+	{
+		m_state = STATE_ANIMATION;
+		this.StartAction( m_aniWhiteTurn, "switchToPutChess" );
 	}
 	
 	public void switchToPutChess()
@@ -281,7 +299,16 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 		{
 			// TODO Auto-generated method stub
 			
-			m_curTurnChess = 3 - m_curTurnChess;	//[HACK]
+			if( m_curTurnChess == Chess.CHESS_BLACK )
+			{
+				m_curTurnChess = Chess.CHESS_WHITE;
+				aniWhiteTurn();
+			}
+			else if( m_curTurnChess == Chess.CHESS_WHITE )
+			{
+				m_curTurnChess = Chess.CHESS_BLACK;
+				aniBlackTurn();
+			}
 		
 			m_cbBlack.Check( !m_cbBlack.IsChecked() );
 			m_cbWhite.Check( !m_cbWhite.IsChecked() );
