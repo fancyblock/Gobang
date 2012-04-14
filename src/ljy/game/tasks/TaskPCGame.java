@@ -21,7 +21,9 @@ import ljy.game.chess.Chess;
 import ljy.game.chess.ChessBoard;
 import ljy.game.ingame.AinBegin;
 import ljy.game.ingame.AniBlackTurn;
+import ljy.game.ingame.AniBlackWin;
 import ljy.game.ingame.AniWhiteTurn;
+import ljy.game.ingame.AniWhiteWin;
 import android.graphics.Point;
 
 /**
@@ -41,11 +43,13 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	
 	static private final int STATE_ANIMATION = 1;
 	static private final int STATE_PUTCHESS = 2;
+	static private final int STATE_GAMEOVER = 3;
 	
 	//-------------------------------------- private member --------------------------------------
 	
 	private UIWidget m_uiRoot = null;
 	private UIButton m_btnBack = null;
+	private UIButton m_btnReset = null;
 	private UICheckBox m_cbBlack = null;
 	private UICheckBox m_cbWhite = null;
 	
@@ -65,6 +69,10 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	private AinBegin m_aniBegin = null;
 	private AniBlackTurn m_aniBlackTurn = null;
 	private AniWhiteTurn m_aniWhiteTurn = null;
+	private AniBlackWin m_aniBlackWin = null;
+	private AniWhiteWin m_aniWhiteWin = null;
+	
+	private Point[] m_winChesses = null;
 	
 	//-------------------------------------- public function --------------------------------------
 
@@ -89,6 +97,11 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 		m_btnBack.SetPos( 12, 12 );
 		m_btnBack.SetCallback( this );
 		m_btnBack.SetParent( m_uiRoot );
+		
+		m_btnReset = new UIButton( ljy.game.R.drawable.menus, 180, 100, 180, 120, 39, 19 );
+		m_btnReset.SetPos( 270, 12 );
+		m_btnReset.SetCallback( this );
+		m_btnReset.SetParent( m_uiRoot );
 		
 		m_cbBlack = new UICheckBox( ljy.game.R.drawable.menus, 180, 80, 180, 60, 39, 19 );
 		m_cbBlack.SetPos( 30, 50 );
@@ -123,6 +136,8 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 		m_aniBegin = new AinBegin();
 		m_aniBlackTurn = new AniBlackTurn();
 		m_aniWhiteTurn = new AniWhiteTurn();
+		m_aniBlackWin = new AniBlackWin();
+		m_aniWhiteWin = new AniWhiteWin();
 		
 		gameStart();
 	}
@@ -156,14 +171,20 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 				chess = chessData[i][j];
 				Point pt = boardToScreen( i, j );
 				
-				if( chess == Chess.CHESS_BLACK )
+				if( m_state == STATE_GAMEOVER )
 				{
-					m_imgChessBlack.Draw( pt.x, pt.y );
+					//TODO			flash the winner line
 				}
-				
-				if( chess == Chess.CHESS_WHITE )
+				else
 				{
-					m_imgChessWhite.Draw( pt.x, pt.y );
+					if( chess == Chess.CHESS_BLACK )
+					{
+						m_imgChessBlack.Draw( pt.x, pt.y );
+					}
+					if( chess == Chess.CHESS_WHITE )
+					{
+						m_imgChessWhite.Draw( pt.x, pt.y );
+					}
 				}
 			}
 		}
@@ -227,6 +248,12 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 			TaskSet._mainMenuTask.Start( 0 );
 		}
 		
+		if( btn == m_btnReset )
+		{
+			this.RemoveAllAction();
+			gameStart();
+		}
+		
 		//TODO
 	}
 	
@@ -234,8 +261,10 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	
 	//------------------------------------------- private function --------------------------------------------------
 	
-	private void gameStart()
+	public void gameStart()
 	{
+		m_chessboard.CleanBoard();
+		
 		m_pendingChess = null;
 		m_curTurnChess = Chess.CHESS_BLACK;		// black first
 		m_state = STATE_ANIMATION;
@@ -256,6 +285,25 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	{
 		m_state = STATE_ANIMATION;
 		this.StartAction( m_aniWhiteTurn, "switchToPutChess" );
+	}
+	
+	public void aniWin()
+	{
+		m_state = STATE_ANIMATION;
+		
+		if( m_curTurnChess == Chess.CHESS_BLACK )
+		{
+			this.StartAction( m_aniBlackWin, "switchToWinStatus" );
+		}
+		if( m_curTurnChess == Chess.CHESS_WHITE )
+		{
+			this.StartAction( m_aniWhiteWin, "switchToWinStatus" );
+		}
+	}
+	
+	public void switchToWinStatus()
+	{
+		m_state = STATE_GAMEOVER;
 	}
 	
 	public void switchToPutChess()
@@ -297,8 +345,19 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 		
 		if( m_chessboard.PutChess( m_curTurnChess, pt.x, pt.y ) == true )
 		{
-			// TODO Auto-generated method stub
-			
+			judgeChess();
+		}
+		
+		m_pendingChess = null;
+		
+	}
+	
+	private void judgeChess()
+	{
+		Point[] pts = m_chessboard.GetFiveLine();
+		
+		if( pts == null )
+		{
 			if( m_curTurnChess == Chess.CHESS_BLACK )
 			{
 				m_curTurnChess = Chess.CHESS_WHITE;
@@ -313,11 +372,13 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 			m_cbBlack.Check( !m_cbBlack.IsChecked() );
 			m_cbWhite.Check( !m_cbWhite.IsChecked() );
 		}
-		
-		m_pendingChess = null;
-		
+		else
+		{
+			m_winChesses = pts;
+			aniWin();
+		}
 	}
-	
+
 	//--------------------------------------------------- private function -----------------------------------------------------
 	
 	private Point screenToBoard(int x, int y)

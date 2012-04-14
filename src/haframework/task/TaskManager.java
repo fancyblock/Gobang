@@ -68,10 +68,6 @@ public class TaskManager
 	public void Quit()
 	{
 		this.RemoveAll();
-		
-//		m_taskList = null;
-//		m_pendingTasks = null;
-//		m_runningTasks = null;
 	}
 	
 	/**
@@ -169,7 +165,12 @@ public class TaskManager
 			for( j = 0; j < actionLen; j++ )
 			{
 				actData = actionList.get(j);
-				if( actData._action.vUpdate( elepsed ) == false )
+
+				if( actData._forceStop == true )
+				{
+					actEraseList.add( actData );
+				}
+				else if( actData._action.vUpdate( elepsed ) == false )
 				{
 					actEraseList.add( actData );
 				}
@@ -180,8 +181,11 @@ public class TaskManager
 			for( j = 0; j < actionLen; j++ )
 			{
 				actData = actEraseList.get(j);
+				
+				actData._action.vLeave();
+				
 				// invoke the callback
-				if( actData._actionCallback != null )
+				if( actData._actionCallback != null && actData._forceStop == false )
 				{
 					try
 					{
