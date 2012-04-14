@@ -1,5 +1,7 @@
 package ljy.game.chess;
 
+import android.graphics.Point;
+
 public class ChessBoard 
 {
 	static public final int MAX_LINE = 15;
@@ -12,7 +14,7 @@ public class ChessBoard
 	public ChessBoard()
 	{
 		m_chessData = new int[MAX_LINE][MAX_LINE];
-		clean();
+		CleanBoard();
 	}
 	
 	/**
@@ -43,8 +45,12 @@ public class ChessBoard
 		return m_chessData;
 	}
 	
-	// clean the chessboard
-	private void clean()
+	/**
+	 * @desc	clean the chessboard
+	 * @para	none
+	 * @return	none
+	 */
+	public void CleanBoard()
 	{
 		for( int i = 0; i < MAX_LINE; i++ )
 		{
@@ -53,5 +59,18 @@ public class ChessBoard
 				m_chessData[i][j] = Chess.CHESS_BLANK;
 			}
 		}
+	}
+
+	/**
+	 * @desc	if some one win the game , return the array of the chess
+	 * @return
+	 */
+	public Point[] GetFiveLine()
+	{
+		Point[] pts = new Point[5];
+		
+		// TODO Auto-generated method stub 
+		
+		return pts;
 	}
 }

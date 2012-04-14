@@ -9,7 +9,6 @@ package haframework.task;
  */
 public class Action 
 {
-
 	/**
 	 * @desc	constructor
 	 */

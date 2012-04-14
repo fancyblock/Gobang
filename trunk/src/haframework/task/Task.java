@@ -84,6 +84,7 @@ public class Task
 		ActionData action = new ActionData();
 		action._action = act;
 		action._actionCallback = callbackCall;
+		action._forceStop = false;
 		
 		// invoke action func
 		action._action.vEnter();
@@ -91,6 +92,25 @@ public class Task
 		m_actionList.add( action );
 		
 		return true;
+	}
+	
+	/**
+	 * @desc	remove all the actions inside this task
+	 * @para	none
+	 * @return	how many actions be removed
+	 */
+	public int RemoveAllAction()
+	{
+		int actionCnt = 0;
+		
+		actionCnt = m_actionList.size();
+		for( int i = 0; i < actionCnt; i++ )
+		{
+			ActionData actData = m_actionList.get( i );
+			actData._forceStop = true;
+		}
+		
+		return actionCnt;
 	}
 	
 	/**
@@ -203,4 +223,5 @@ class ActionData
 {
 	public Action _action;
 	public Method _actionCallback;
+	public boolean _forceStop;
 }
