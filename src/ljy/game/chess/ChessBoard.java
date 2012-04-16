@@ -67,10 +67,92 @@ public class ChessBoard
 	 */
 	public Point[] GetFiveLine()
 	{
-		Point[] pts = new Point[5];
+		Point[] pts = null;
 		
-		// TODO Auto-generated method stub 
+		//new Point[5];
+		for( int i = 0; i < MAX_LINE; i++ )
+		{
+			for( int j = 0; j < MAX_LINE; j++ )
+			{
+				int type = m_chessData[i][j];
+				
+				if( type != Chess.CHESS_BLANK )
+				{
+					pts = checkFive( i, j, 1, 0 );
+					if( pts != null )	return pts;
+					
+					pts = checkFive( i, j, 1, 1 );
+					if( pts != null )	return pts;
+					
+					pts = checkFive( i, j, 0, 1 );
+					if( pts != null )	return pts;
+					
+					pts = checkFive( i, j, -1, 1 );
+					if( pts != null )	return pts;
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	//---------------------------- private function ----------------------------
+	
+	private Point[] checkFive( int x, int y, int incX, int incY ) 
+	{
+		Point[] pts = null;
+		
+		int type = m_chessData[x][y];
+		
+		int posX = x;
+		int posY = y;
+		int count = 0;
+		
+		while( true )
+		{
+			if( m_chessData[posX][posY] == type )
+			{
+				count++;
+			}
+			
+			int nextPosX = posX + incX;
+			int nextPosY = posY + incY;
+			
+			if( isLegalPos( nextPosX, nextPosY ) == true )
+			{
+				posX = nextPosX;
+				posY = nextPosY;
+			}
+			else
+			{
+				break;
+			}
+		}
+		
+		if( count >= 5 )
+		{
+			pts = new Point[count];
+			
+			for( int i = 0; i < count; i++ )
+			{
+				pts[i] = new Point();
+				pts[i].x = x + i * incX;
+				pts[i].y = y + i * incY;
+			}
+		}
 		
 		return pts;
 	}
+
+	private boolean isLegalPos( int posX, int posY ) 
+	{
+		if( posX < 0 || posY < 0 ||
+				posX >= MAX_LINE || posY >= MAX_LINE )
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
 }

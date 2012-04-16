@@ -19,6 +19,7 @@ import java.util.Vector;
 import ljy.game.TaskSet;
 import ljy.game.chess.Chess;
 import ljy.game.chess.ChessBoard;
+import ljy.game.chess.GameTree;
 import ljy.game.ingame.AinBegin;
 import ljy.game.ingame.AniBlackTurn;
 import ljy.game.ingame.AniBlackWin;
@@ -44,6 +45,7 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	static private final int STATE_ANIMATION = 1;
 	static private final int STATE_PUTCHESS = 2;
 	static private final int STATE_GAMEOVER = 3;
+	static private final int STATE_AI = 4;
 	
 	//-------------------------------------- private member --------------------------------------
 	
@@ -73,6 +75,7 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	private AniWhiteWin m_aniWhiteWin = null;
 	
 	private Point[] m_winChesses = null;
+	private int m_flashChessInterval = 0;
 	
 	//-------------------------------------- public function --------------------------------------
 
@@ -173,7 +176,52 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 				
 				if( m_state == STATE_GAMEOVER )
 				{
-					//TODO			flash the winner line
+					boolean isWinChess = false;
+					
+					for( int k = 0; k < m_winChesses.length; k++ )
+					{
+						Point winPt = m_winChesses[k];
+						
+						if( winPt.x == i && winPt.y == j )
+						{
+							isWinChess = true;
+							
+							break;
+						}
+					}
+					
+					if( isWinChess )
+					{
+						m_flashChessInterval += 1;
+							
+						if( m_flashChessInterval > 70 )
+						{
+							m_flashChessInterval = 0;
+						}
+							
+						if( m_flashChessInterval > 35 )
+						{
+							if( chess == Chess.CHESS_BLACK )
+							{
+								m_imgChessBlack.Draw( pt.x, pt.y );
+							}
+							if( chess == Chess.CHESS_WHITE )
+							{
+								m_imgChessWhite.Draw( pt.x, pt.y );
+							}
+						}
+					}
+					else
+					{
+						if( chess == Chess.CHESS_BLACK )
+						{
+							m_imgChessBlack.Draw( pt.x, pt.y );
+						}
+						if( chess == Chess.CHESS_WHITE )
+						{
+							m_imgChessWhite.Draw( pt.x, pt.y );
+						}
+					}
 				}
 				else
 				{
@@ -244,6 +292,7 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	{
 		if( btn == m_btnBack )
 		{
+			this.RemoveAllAction();
 			this.Stop();
 			TaskSet._mainMenuTask.Start( 0 );
 		}
@@ -284,7 +333,7 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	public void aniWhiteTurn()
 	{
 		m_state = STATE_ANIMATION;
-		this.StartAction( m_aniWhiteTurn, "switchToPutChess" );
+		this.StartAction( m_aniWhiteTurn, "switchToAI" );
 	}
 	
 	public void aniWin()
@@ -304,6 +353,18 @@ public class TaskPCGame extends Task implements IButtonCallback, ICheckBoxCallba
 	public void switchToWinStatus()
 	{
 		m_state = STATE_GAMEOVER;
+	}
+	
+	public void switchToAI()
+	{
+		m_state = STATE_AI;
+		
+		Point pt = null;
+		
+		pt = GameTree.GetNextStep( m_chessboard, Chess.CHESS_WHITE );
+		
+		m_chessboard.PutChess( m_curTurnChess, pt.x, pt.y );
+		judgeChess();
 	}
 	
 	public void switchToPutChess()
