@@ -48,7 +48,7 @@ public class AniBlackTurn extends Action
 			if( m_xPos < 91 )
 			{
 				m_xPos += m_speed;
-				m_speed += 0.1f;
+				m_speed += 0.3f;
 			}
 			else
 			{
@@ -75,7 +75,7 @@ public class AniBlackTurn extends Action
 			if( m_xPos < 320 )
 			{
 				m_xPos += m_speed;
-				m_speed += 0.1f;
+				m_speed += 0.3f;
 			}
 			else
 			{
