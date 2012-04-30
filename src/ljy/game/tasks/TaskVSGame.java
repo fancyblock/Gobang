@@ -22,6 +22,7 @@ import ljy.game.chess.ChessBoard;
 import ljy.game.ingame.AinBegin;
 import ljy.game.ingame.AniBlackTurn;
 import ljy.game.ingame.AniBlackWin;
+import ljy.game.ingame.AniDropChess;
 import ljy.game.ingame.AniWhiteTurn;
 import ljy.game.ingame.AniWhiteWin;
 import android.graphics.Point;
@@ -44,6 +45,8 @@ public class TaskVSGame extends Task implements IButtonCallback, ICheckBoxCallba
 	static private final int STATE_ANIMATION = 1;
 	static private final int STATE_PUTCHESS = 2;
 	static private final int STATE_GAMEOVER = 3;
+	
+	static private final int RAND_TURN_INV = 5;
 	
 	//-------------------------------------- private member --------------------------------------
 	
@@ -71,9 +74,12 @@ public class TaskVSGame extends Task implements IButtonCallback, ICheckBoxCallba
 	private AniWhiteTurn m_aniWhiteTurn = null;
 	private AniBlackWin m_aniBlackWin = null;
 	private AniWhiteWin m_aniWhiteWin = null;
+	private AniDropChess m_aniDropChess = null;
 	
 	private Point[] m_winChesses = null;
 	private int m_flashChessInterval = 0;
+	
+	private int m_step = 0;
 	
 	//-------------------------------------- public function --------------------------------------
 
@@ -139,6 +145,7 @@ public class TaskVSGame extends Task implements IButtonCallback, ICheckBoxCallba
 		m_aniWhiteTurn = new AniWhiteTurn();
 		m_aniBlackWin = new AniBlackWin();
 		m_aniWhiteWin = new AniWhiteWin();
+		m_aniDropChess = new AniDropChess();
 		
 		gameStart();
 	}
@@ -300,8 +307,6 @@ public class TaskVSGame extends Task implements IButtonCallback, ICheckBoxCallba
 			this.RemoveAllAction();
 			gameStart();
 		}
-		
-		//TODO
 	}
 	
 	public void onCheckBoxCheck( UICheckBox checkbox ){}
@@ -315,6 +320,7 @@ public class TaskVSGame extends Task implements IButtonCallback, ICheckBoxCallba
 		m_pendingChess = null;
 		m_curTurnChess = Chess.CHESS_BLACK;		// black first
 		m_state = STATE_ANIMATION;
+		m_step = 0;
 		
 		m_cbBlack.Check( true );
 		m_cbWhite.Check( false );
@@ -392,6 +398,7 @@ public class TaskVSGame extends Task implements IButtonCallback, ICheckBoxCallba
 		
 		if( m_chessboard.PutChess( m_curTurnChess, pt.x, pt.y ) == true )
 		{
+			m_step++;
 			judgeChess();
 		}
 		
@@ -405,19 +412,46 @@ public class TaskVSGame extends Task implements IButtonCallback, ICheckBoxCallba
 		
 		if( pts == null )
 		{
+			String nextTurnFunc = null;
+			
+			// set the random disappear chess
+			if( m_step % RAND_TURN_INV == 0 )
+			{
+				Point dropPt = m_chessboard.RemoveRandomExistChess();
+				
+				m_aniDropChess.CHESS_POS = boardToScreen( dropPt.x, dropPt.y );
+				int data[][] = m_chessboard.GetChessData();
+				if( data[dropPt.x][dropPt.y] == Chess.CHESS_BLACK )
+				{
+					m_aniDropChess.CHESS_SPR = m_imgChessBlack;
+				}
+				if( data[dropPt.x][dropPt.y] == Chess.CHESS_WHITE )
+				{
+					m_aniDropChess.CHESS_SPR = m_imgChessWhite;
+				}
+				data[dropPt.x][dropPt.y] = Chess.CHESS_BLANK;
+			}
+			else
+			{
+				m_aniDropChess.CHESS_POS = null;
+				m_aniDropChess.CHESS_SPR = null;
+			}
+			
 			if( m_curTurnChess == Chess.CHESS_BLACK )
 			{
 				m_curTurnChess = Chess.CHESS_WHITE;
-				aniWhiteTurn();
+				nextTurnFunc = "aniWhiteTurn";
 			}
 			else if( m_curTurnChess == Chess.CHESS_WHITE )
 			{
 				m_curTurnChess = Chess.CHESS_BLACK;
-				aniBlackTurn();
+				nextTurnFunc = "aniBlackTurn";
 			}
 		
 			m_cbBlack.Check( !m_cbBlack.IsChecked() );
 			m_cbWhite.Check( !m_cbWhite.IsChecked() );
+			
+			this.StartAction( m_aniDropChess, nextTurnFunc );
 		}
 		else
 		{
