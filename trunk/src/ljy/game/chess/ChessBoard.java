@@ -1,5 +1,7 @@
 package ljy.game.chess;
 
+import java.util.LinkedList;
+
 import android.graphics.Point;
 
 public class ChessBoard 
@@ -7,6 +9,7 @@ public class ChessBoard
 	static public final int MAX_LINE = 15;
 	
 	private int m_chessData[][] = null;
+	private LinkedList<Point> m_chesses = null;
 	
 	/**
 	 * @desc	constructor
@@ -14,6 +17,7 @@ public class ChessBoard
 	public ChessBoard()
 	{
 		m_chessData = new int[MAX_LINE][MAX_LINE];
+		m_chesses = new LinkedList<Point>();
 		CleanBoard();
 	}
 	
@@ -32,6 +36,8 @@ public class ChessBoard
 		}
 		
 		m_chessData[xPos][yPos] = type;
+		
+		m_chesses.add( new Point( xPos, yPos ) );
 		
 		return true;
 	}
@@ -59,6 +65,8 @@ public class ChessBoard
 				m_chessData[i][j] = Chess.CHESS_BLANK;
 			}
 		}
+		
+		m_chesses.clear();
 	}
 
 	/**
@@ -94,6 +102,21 @@ public class ChessBoard
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * @desc	return a random chess
+	 * @return
+	 */
+	public Point RemoveRandomExistChess() 
+	{
+		int index = (int)( Math.random() * m_chesses.size() );
+		
+		Point pt = m_chesses.get( index );
+		m_chesses.remove( index );
+//		m_chessData[pt.x][pt.y] = Chess.CHESS_BLANK;
+		
+		return pt;
 	}
 	
 	//---------------------------- private function ----------------------------
