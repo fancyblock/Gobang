@@ -87,7 +87,7 @@ public class AinBegin extends Action
 	
 	public void vDraw( float elapsed )
 	{
-		m_imgTxt.Draw( m_xPos, 200 );
+		m_imgTxt.Draw( m_xPos, 410 );
 	}
 
 }
