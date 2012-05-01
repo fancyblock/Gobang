@@ -64,10 +64,11 @@ public class TaskMainMenu extends Task implements IButtonCallback
 		m_btnSetting = new UIButton( ljy.game.R.drawable.menus, 5, 100, 90, 100, 39, 19 );
 		m_btnSetting.SetPos( 140, 285 );
 		m_btnSetting.SetCallback( this );
-		m_btnSetting.SetParent( m_uiRoot );
+//		m_btnSetting.SetParent( m_uiRoot );
 		
 		m_btnHelp = new UIButton( ljy.game.R.drawable.menus, 5, 120, 90, 120, 39, 19 );
-		m_btnHelp.SetPos( 140, 320 );
+		//m_btnHelp.SetPos( 140, 320 );
+		m_btnHelp.SetPos( 140, 285 );
 		m_btnHelp.SetCallback( this );
 		m_btnHelp.SetParent( m_uiRoot );
 		
