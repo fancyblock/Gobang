@@ -21,6 +21,7 @@ public class TaskMainMenu extends Task implements IButtonCallback
 {
 	protected Sprite m_bg = null;
 	protected Sprite m_title = null;
+	protected Sprite m_title2 = null;
 	protected UIWidget m_uiRoot = null;
 	protected UIButton m_btnPCMode = null;
 	protected UIButton m_btnVSMode = null;
@@ -42,7 +43,10 @@ public class TaskMainMenu extends Task implements IButtonCallback
 		m_bg = SpriteFactory.Singleton().CreateSprite( ljy.game.R.drawable.menus );
 		m_bg.SetUV( 160, 5, 20, 20 );
 		m_title = SpriteFactory.Singleton().CreateSprite( ljy.game.R.drawable.menus );
-		m_title.SetUV( 5, 5, 150, 29 );
+		//m_title.SetUV( 5, 5, 150, 29 );
+		m_title.SetUV( 64, 5, 89, 29 );
+		m_title2 = SpriteFactory.Singleton().CreateSprite( ljy.game.R.drawable.menus );
+		m_title2.SetUV( 240, 120, 119, 26 );
 		
 		m_uiRoot = new UIWidget();
 		
@@ -95,7 +99,8 @@ public class TaskMainMenu extends Task implements IButtonCallback
 	public void vDraw( float elapsed )
 	{
 		m_bg.Draw( 0, 0, 320, 480 );
-		m_title.Draw( 86.5f, 80 );
+		m_title.Draw( 170.0f, 80 );
+		m_title2.Draw( 50.0f, 82 );
 	}
 
 	public void onButtonDown( UIButton btn )
